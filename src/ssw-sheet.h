@@ -82,7 +82,10 @@ struct _SswSheetClass
 
 G_DECLARE_FINAL_TYPE (SswSheet, ssw_sheet, SSW, SHEET, GtkBin)
 
-  GtkWidget *ssw_sheet_new (void);
+#define SSW_SHEET_API_VERSION 1
+int ssw_sheet_get_api_version (void);
+
+GtkWidget *ssw_sheet_new (void);
 GtkWidget *ssw_sheet_get_button (SswSheet *s);
 
 /* Prime CLIP such that a paste request will act upon this SHEET */
@@ -96,7 +99,8 @@ typedef void (*ssw_sheet_set_cell) (GtkTreeModel *store, gint col, gint row,
 
 void ssw_sheet_paste (SswSheet *sheet, GtkClipboard *clip, ssw_sheet_set_cell sc);
 
-/* Check if an editable is focused. If yes, cut to clipboard and return TRUE */
+/* Check if an editable is focused. If yes, cut to clipboard and return TRUE
+   Available since api version 1 */
 gboolean ssw_sheet_try_cut (SswSheet *sheet);
 
 /* Scroll the sheet so that the cell HPOS,VPOS is approximately in the center.

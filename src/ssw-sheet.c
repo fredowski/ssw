@@ -49,6 +49,12 @@ G_DEFINE_TYPE (SswSheet, ssw_sheet, GTK_TYPE_BIN)
 
 static guint signals [n_SIGNALS];
 
+int
+ssw_sheet_get_api_version (void)
+{
+  return SSW_SHEET_API_VERSION;
+}
+
 GtkWidget *
 ssw_sheet_new (void)
 {
