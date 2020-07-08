@@ -1044,6 +1044,10 @@ void
 ssw_sheet_paste (SswSheet *sheet, GtkClipboard *clip, ssw_sheet_set_cell sc)
 {
   gint col, row;
+  if (sheet &&
+      ssw_sheet_body_paste_editable (SSW_SHEET_BODY (sheet->selected_body)))
+    return;
+
   if (ssw_sheet_get_active_cell (sheet, &col, &row))
     {
       struct paste_state *ps = g_malloc (sizeof *ps);
@@ -1057,6 +1061,13 @@ ssw_sheet_paste (SswSheet *sheet, GtkClipboard *clip, ssw_sheet_set_cell sc)
     }
 }
 
+gboolean
+ssw_sheet_try_cut (SswSheet *sheet)
+{
+  if (sheet == NULL)
+    return FALSE;
+  return ssw_sheet_body_cut_editable (SSW_SHEET_BODY (sheet->selected_body));
+}
 
 
 
