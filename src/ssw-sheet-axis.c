@@ -1928,7 +1928,7 @@ fine_adjust (SswSheetAxis *axis, gint whereto, gint init_location,
    with the location and extent of the WHERETO.
    This function is bounded by O(log n) in the number of items.
 */
-static void
+static gboolean
 course_adjust (SswSheetAxis *axis, gint whereto, gint *location, gint *extent)
 {
   PRIV_DECL (axis);
@@ -1937,6 +1937,7 @@ course_adjust (SswSheetAxis *axis, gint whereto, gint *location, gint *extent)
     gtk_adjustment_get_upper (priv->adjustment) /
     gtk_adjustment_get_page_size (priv->adjustment);
   gint old_direction = 0;
+  gint i = 0;
   do
     {
       direction = ssw_sheet_axis_find_boundary (axis,  whereto,
@@ -1951,8 +1952,15 @@ course_adjust (SswSheetAxis *axis, gint whereto, gint *location, gint *extent)
       if (old_direction == -direction)
         k /= 2.0;
       old_direction = direction;
+      axis_debug ("%d Adjusting in direction %d\n", i, direction);
+      if (++i > 4)
+        {
+          g_warning ("Cannot scroll to %d", whereto);
+          return FALSE;
+        }
     }
   while (direction != 0);
+  return TRUE;
 }
 
 
@@ -1970,9 +1978,13 @@ ssw_sheet_axis_jump_end_with_offset (SswSheetAxis *axis, gint whereto, gint offs
                     / (gdouble) ssw_sheet_axis_get_extent (axis));
 
   gint location, extent;
-  course_adjust (axis, whereto, &location, &extent);
-  fine_adjust (axis, whereto, location, extent,
-               ssw_sheet_axis_rtl (axis) ? adj_start : adj_end, offs);
+  if (course_adjust (axis, whereto, &location, &extent))
+    fine_adjust (axis, whereto, location, extent,
+                 ssw_sheet_axis_rtl (axis) ? adj_start : adj_end, offs);
+  else
+    {
+      ssw_sheet_axis_jump_center (axis, whereto);
+    }
 }
 
 
@@ -1990,9 +2002,13 @@ ssw_sheet_axis_jump_start_with_offset (SswSheetAxis *axis, gint whereto, gint of
                     / (gdouble) ssw_sheet_axis_get_extent (axis));
 
   gint location, extent;
-  course_adjust (axis, whereto, &location, &extent);
-  fine_adjust (axis, whereto, location, extent,
-               ssw_sheet_axis_rtl (axis) ? adj_end : adj_start, offs);
+  if (course_adjust (axis, whereto, &location, &extent))
+    fine_adjust (axis, whereto, location, extent,
+                 ssw_sheet_axis_rtl (axis) ? adj_end : adj_start, offs);
+  else
+    {
+      ssw_sheet_axis_jump_center (axis, whereto);
+    }
 }
 
 
@@ -2011,7 +2027,11 @@ ssw_sheet_axis_jump_center (SswSheetAxis *axis, gint whereto)
                     / (gdouble) ssw_sheet_axis_get_extent (axis));
 
   gint location, extent;
-  course_adjust (axis, whereto, &location, &extent);
+  if (! course_adjust (axis, whereto, &location, &extent))
+  {
+      __axis_set_value (axis, (upper - page_size) * (whereto + 0.5)
+                        / (gdouble) ssw_sheet_axis_get_extent (axis));
+  }
 }
 
 
