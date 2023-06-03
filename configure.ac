@@ -1,5 +1,5 @@
 dnl A widget to display and manipulate tabular data
-dnl Copyright (C) 2019, 2020  John Darrington
+dnl Copyright (C) 2019, 2020, 2023  John Darrington
 
 dnl This program is free software: you can redistribute it and/or modify
 dnl it under the terms of the GNU General Public License as published by
@@ -14,7 +14,7 @@ dnl GNU General Public License for more details.
 dnl You should have received a copy of the GNU General Public License
 dnl along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-AC_INIT([spread-sheet-widget], [0.8])
+AC_INIT([spread-sheet-widget], [0.9])
 
 AM_INIT_AUTOMAKE()
 AC_CONFIG_MACRO_DIR([aclocal-aux])
