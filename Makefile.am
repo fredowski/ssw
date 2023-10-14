@@ -109,8 +109,8 @@ dist-hook:
 		mv $(distdir)/cl-t $(distdir)/ChangeLog;          \
 		cat $(top_srcdir)/ChangeLog >> $(distdir)/ChangeLog; \
         fi
+	find $(distdir) -exec touch -c -d @0 {} \;
 
 DISTCLEANFILES += $(built_doc_files)
 built_doc_files = ${top_builddir}/doc/prog1.c-enum ${top_builddir}/doc/prog2.c-enum
 doc_spread_sheet_widget_TEXINFOS = ${built_doc_files}
-
