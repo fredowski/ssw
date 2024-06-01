@@ -723,6 +723,10 @@ start_editing (SswSheetBody *body, GdkEvent *e)
   gint row = -1, col = -1;
   get_active_cell (body, &col, &row);
 
+  /* If there is no active cell, then there is nothing to edit */
+  if (row == -1 || col == -1)
+    return;
+
   /* There seems to be a bug in GtkCellRendererSpinButton, where
      its GtkAdjustment spins at wierd moments.  Blocking the handler
      here seems to work around the problem. */
