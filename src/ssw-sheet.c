@@ -779,12 +779,9 @@ ssw_sheet_class_init (SswSheetClass *class)
 }
 
 static void
-forward_signal (SswSheet *sheet, ...)
+forward_signal (SswSheet *sheet, gint col, gint row, const GValue *valuep, const gpointer ud)
 {
-  va_list ap;
-  va_start (ap, sheet);
-  g_signal_emit_valist (sheet, signals [VALUE_CHANGED], 0, ap);
-  va_end (ap);
+  g_signal_emit(sheet, signals [VALUE_CHANGED], 0, col, row, valuep);
 }
 
 static void
